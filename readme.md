@@ -1,5 +1,7 @@
 # Ansible Automation Platform QuickStart
-As remarkable as the Ansible documentation is, one might find it challenging to discover a suitable guide for establishing end-to-end automation through the Ansible Automation Platform (also known as Ansible Tower). To address this, we shall now delve into the process of setting up Ansible automation for a sample project focused on extracting data from remote Linux hosts.
+As remarkable as the Ansible documentation is, one might find it challenging to discover a suitable guide for establishing end-to-end automation through the Ansible Automation Platform (previously Ansible Tower). To address this, we shall now delve into the process of setting up Ansible automation for a sample project focused on extracting data from remote Linux hosts.
+
+![plot](./image-ansible-automation-quickstart.png)
 
 ## Pre-requisites
 - Linux hosts inventory to provide as input to Ansible.
