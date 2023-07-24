@@ -30,7 +30,7 @@ Here is a **TLDR** version of what we will do in this automation project:
 
 ### 2.1. Dynamic Inventory Generate Script 
 Ansible Dynamic Inventory script to generate inventory based on a flat-file input file (linux-servers.txt) with hosts:
-- The options "–list" and "–host" are required by Ansible.
+- The options "--list" and "--host" are [required](https://docs.ansible.com/ansible/latest/dev_guide/developing_inventory.html#inventory-script-conventions) by Ansible.
 - Linux server naming convention is used to split servers into sub-groups.
 - In hostname, the 2nd column separated by "-" has the app-name. So each sub-group will have all hosts of the same app.
 - All hosts added to common-group "linux"
