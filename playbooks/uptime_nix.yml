@@ -8,7 +8,6 @@
     task_timeout: 1200 #task-timeout in seconds
     use_facts: true #boolean variable controls if we use host-based facts caching
   tasks:
-    #prereq: openssl cli in target host
     - name: Data Extraction script source
       copy:
         dest: /tmp/uptime.sh
