@@ -33,7 +33,7 @@ Ansible Dynamic Inventory script to generate inventory based on a flat-file inpu
 - In hostname, the 2nd column separated by "-" has the app-name. So each sub-group will have all hosts of the same app.
 - All hosts added to common-group "linux"
 - Add ansible connection parameters as sub-group variables
-- inv_create.py: If you use Ansible container execution environment, it does not honor locally sourced files. So this version of the inventory script uses hard-coded servers in a variable within the script.
+- [inv_create.py](./inv_create.py): If you use Ansible container execution environment, it does not honor locally sourced files. So this version of the inventory script uses hard-coded servers in a variable within the script.
 - Key connection attributes added to the host-group config:
 
 ```
@@ -71,14 +71,15 @@ Note: In this example project, collections is just for demo and not used by the 
 
 #### 2.2.1. Pre-requisites
 In Ansible Job settings (Settings -> Jobs -> Jobs settings), the "Enable Collection(s) Download" must be set to "On".
-2.2.2. Details
-The file requirements.yml contains the modules.
-Ansible will automatically install modules from this file prior to job execution.
+
+#### 2.2.2. Details
+- The file [requirements.yml](./collections/requirements.yml) contains the modules.
+- Ansible will automatically install modules from this file prior to job execution.
 
 ## 3. Playbooks
 ### 3.1. Extract Data
-A sample playbook that extracts server uptime from each remote host.
-Sample Output:
+- A sample [uptime](./playbooks/uptime_nix.yml) playbook that extracts server uptime from each remote host.
+- Sample Output:
 ```
 {
   "server_uptime.stdout_lines[0]": [
@@ -91,8 +92,10 @@ Sample Output:
 ```
 
 ### 3.2. Collate Output
-- This playbook uses Ansible Tower's facts cache to gather facts from all hosts.
-- The 'outputMode' variable in the playbook controls if Ansible job output will be in json or csv format.
+- This playbook [collate_output](./playbooks/collate_output.yml) uses Ansible Tower's facts cache to gather facts from all hosts.
+- The 'outputMode' variable in the playbook controls if Ansible job output will be in json or csv format:
+  - json: prints json output in Ansible job log.
+  - csv: uses [ansible_json_to_csv.py](./utilities/ansible_json_to_csv.py) to convert json value in Facts to csv.
 - This task does not make a remote connection to the target hosts.
 - Sample Output (csv):
 ```
@@ -102,7 +105,7 @@ ok: [server1-prom.prod.linux.com -> localhost] => {
 ```
 
 3.3. Clear Facts
-- This playbook clear_facts uses Ansible's meta task to clear the gathered facts from all hosts.
+- This playbook [clear_facts](./playbooks/clear_facts.yml) uses Ansible's meta task to clear the gathered facts from all hosts.
 - This task does not make a remote connection to the target hosts.
 ```
 - name: Clear Facts from Hosts
@@ -144,7 +147,7 @@ Create new job template for a set of hosts. We can split them into multiple job 
 - Job Type: Run
 - Inventory: Select the inventory created earlier.
 - Project: Select the project created earlier.
-- Playbook: Select the playbook from drop-down.
+- Playbook: Select the playbook "playbooks/uptime_nix.yml" from drop-down.
 - Credentials: Select the corresponding ssh private-key.
 - **IMPORTANT** Limit: Specify host pattern to constrain the list of hosts in which the playbook should run. Example: "abc:def" (without quotes) to run playbook in both abc and def hosts.
 - Options: Enable "Enable Fact Storage" (This ensures facts set in playbook are persisted into host in the inventory).
