@@ -1,0 +1,6 @@
+- name: Clear Facts from Hosts
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Clear gathered facts
+      meta: clear_facts

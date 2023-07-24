@@ -1,0 +1,50 @@
+- name: Data Extraction and Collate Output of all hosts
+  gather_facts: false
+  hosts:
+    - all
+  vars:
+    task_timeout: 120 #task-timeout in seconds
+    outputMode: csv #json | csv
+  tasks:
+    #retrieve data from facts cache, without remote connection
+    - delegate_to: localhost
+      name: Data extraction
+      debug:
+        var: ansible_facts["uptime_details"]
+      when: "'json' in outputMode"
+
+    - delegate_to: localhost
+      name: Convert to csv script source
+      copy:
+        src: ../utilities/ansible_json_to_csv.py
+        dest: /tmp/ansible_json_to_csv.py
+        mode: 0755
+      when: "'csv' in outputMode"
+
+    - delegate_to: localhost
+      block:
+        - name: Execute convert to csv
+          shell: |
+            /tmp/ansible_json_to_csv.py "{{ ansible_facts["uptime_details"] }}"
+          timeout: "{{ task_timeout | int }}"
+          args:
+            creates: "/tmp/uptime_csv.lock" #prevent simultaneous-run of this script
+          ignore_errors: true
+          register: uptime_csv_output
+
+        - name: Debug csv output of uptime_details
+          debug:
+            var: uptime_csv_output.stdout_lines[0]
+          
+      rescue:
+        - name:
+          debug:
+            msg: uptime_csv_output.stderr_lines
+
+      always:
+        - name: Cleanup uptime csv script
+          file:
+            path: /tmp/ansible_json_to_csv.py
+            state: absent
+      
+      when: "'csv' in outputMode"

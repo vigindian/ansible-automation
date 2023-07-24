@@ -1,0 +1,71 @@
+- name: Extract Data using bash script
+  gather_facts: false
+  hosts:
+    - all
+  strategy: free #execute tasks on hosts without waiting for other hosts to finish their tasks
+  ignore_unreachable: true
+  vars:
+    task_timeout: 1200 #task-timeout in seconds
+    use_facts: true #boolean variable controls if we use host-based facts caching
+  tasks:
+    #prereq: openssl cli in target host
+    - name: Data Extraction script source
+      copy:
+        dest: /tmp/uptime.sh
+        content: |
+          #!/bin/bash
+
+          #########################################
+          function err()
+          {
+            echo "ERROR: " $*
+            exit 2
+          }
+          #########################################
+
+          UPTIME_CMD="uptime"
+          if [ ! -x "$(command -v ${UPTIME_CMD})" ];then
+              err "Prereq command uptime does not exist"
+          fi
+
+          host=$(hostname)
+          upTime=$(uptime)
+          #array that stores output
+          uptime_details=[{'"'host'"':'"'${host}'"','"'uptime'"':'"'${upTime}'"'}]
+
+          echo ${uptime_details}
+
+          exit 0
+        mode: 0755
+
+    - block:
+        - name: Execute data extraction script
+          shell: |
+            bash /tmp/uptime.sh
+          timeout: "{{ task_timeout | int }}"
+          args:
+            creates: "/tmp/uptime.lock" #prevent simultaneous-run of this script
+          ignore_errors: true
+          register: uptime_output
+
+        - name: Debug final output of uptime_details
+          debug:
+            var: uptime_output.stdout_lines[0]
+          when: not use_facts
+        
+        - set_fact:
+            uptime_details: "{{ uptime_output.stdout_lines[0] }}"
+            cacheable: yes
+          ignore_errors: true
+          when: use_facts
+          
+      rescue:
+        - name:
+          debug:
+            msg: uptime_output.stderr_lines
+
+      always:
+        - name: Cleanup data extraction script
+          file:
+            path: /tmp/uptime.sh
+            state: absent
