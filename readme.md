@@ -29,15 +29,14 @@ Here is a **TLDR** version of what we will do in this automation project:
   - utilities: helper script(s).
 
 ### 2.1. Dynamic Inventory Generate Script 
-Ansible Dynamic Inventory script to generate inventory based on a flat-file input file (linux-servers.txt) with hosts:
+Ansible Dynamic Inventory script, [inv_create.py](./linux/inv_create.py), to generate inventory based on a flat-file input file (linux-servers.txt) or local list of hosts within the script:
 - The options "--list" and "--host" are [required](https://docs.ansible.com/ansible/latest/dev_guide/developing_inventory.html#inventory-script-conventions) by Ansible.
 - Linux server naming convention is used to split servers into sub-groups.
 - In hostname, the 2nd column separated by "-" has the app-name. So each sub-group will have all hosts of the same app.
 - All hosts added to common-group "linux"
 - Add ansible connection parameters as sub-group variables
-- [inv_create.py](./linux/inv_create.py): If you use Ansible container execution environment, it does not honor locally sourced files. So this version of the inventory script uses hard-coded servers in a variable within the script.
+- **Note**: If you use Ansible container execution environment, it does not honor locally sourced files. So this version of the inventory script also accepts hard-coded servers in a variable within the script.
 - Key connection attributes added to the host-group config:
-
 ```
 ansible_connection=ssh
 ansible_user=ansible
@@ -46,7 +45,6 @@ ansible_user=ansible
 **Windows Git Hack**:
 The dynamic inventory script needs execution permission to be set so Ansible can run it. However Windows VSCode does not have a provision to set that. First stage the file and use below git command to enable exec permission for the script:
 ```
-git update-index --chmod=+x .\linux\inventory_create.py
 git update-index --chmod=+x .\linux\inv_create.py
 ```
 
