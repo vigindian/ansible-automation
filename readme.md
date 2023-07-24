@@ -7,7 +7,7 @@ As remarkable as the Ansible documentation is, one might find it challenging to 
 - Ansible credential: Pre-configured ssh private-keys for the remote Linux hosts in Ansible credentials. If elevated privileges are required, then the remote user must have corresponding sudo access. If sudo password is needed, update the Ansible credential with the sudo password of the user.
 
 ## 1. Overview
-Here is a TLDR version of what we will do in this automation project:
+Here is a **TLDR** version of what we will do in this automation project:
 - We prepare the Linux hosts inventory.
 - We create a GIT repo with our Ansible code.
 - We create a new Ansible Project for the GIT repository.
