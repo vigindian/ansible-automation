@@ -104,7 +104,7 @@ ok: [server1-prom.prod.linux.com -> localhost] => {
 }
 ```
 
-3.3. Clear Facts
+### 3.3. Clear Facts
 - This playbook [clear_facts](./playbooks/clear_facts.yml) uses Ansible's meta task to clear the gathered facts from all hosts.
 - This task does not make a remote connection to the target hosts.
 ```
