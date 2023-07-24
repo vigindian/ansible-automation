@@ -35,7 +35,7 @@ Ansible Dynamic Inventory script to generate inventory based on a flat-file inpu
 - In hostname, the 2nd column separated by "-" has the app-name. So each sub-group will have all hosts of the same app.
 - All hosts added to common-group "linux"
 - Add ansible connection parameters as sub-group variables
-- [inv_create.py](./inv_create.py): If you use Ansible container execution environment, it does not honor locally sourced files. So this version of the inventory script uses hard-coded servers in a variable within the script.
+- [inv_create.py](./linux/inv_create.py): If you use Ansible container execution environment, it does not honor locally sourced files. So this version of the inventory script uses hard-coded servers in a variable within the script.
 - Key connection attributes added to the host-group config:
 
 ```
